@@ -425,7 +425,11 @@ button {
 
 .hero-media {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
   z-index: 0;
   overflow: hidden;
 }
@@ -454,7 +458,11 @@ button {
 
 .hero-overlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
   z-index: 1;
   background:
     radial-gradient(circle at 10% 20%, rgba(91, 184, 255, 0.2), transparent 40%),
@@ -1946,6 +1954,15 @@ button {
 
   .hero {
     padding-top: calc(var(--space-section) + 5rem);
+  }
+
+  .hero-media,
+  .hero-overlay {
+    height: 100svh;
+  }
+
+  .video-background {
+    object-position: center 28%;
   }
 
   .scanner-metric-grid,
