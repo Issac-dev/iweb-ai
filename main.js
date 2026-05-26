@@ -183,11 +183,10 @@ const useMobileHeroScroll = isiOS && window.matchMedia("(max-width: 860px)").mat
 
 setupVideoSync(heroVideo, useMobileHeroScroll ? {
   trigger: "#home",
-  endTrigger: "#home",
-  end: "bottom top",
-  scrub: 0.65,
-  pin: false,
-  pinSpacing: false
+  end: () => `+=${Math.round(window.innerHeight * 3.5)}`,
+  scrub: 0.8,
+  pin: true,
+  pinSpacing: true
 } : {
   trigger: "#home",
   end: () => {
