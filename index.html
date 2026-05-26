@@ -75,19 +75,21 @@
     </div>
   </nav>
 
-  <video
-    id="heroVideo"
-    class="video-background"
-    src="assets/video.mp4"
-    muted
-    playsinline
-    webkit-playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
-
   <main>
     <section id="home" class="section hero" aria-labelledby="hero-heading">
+      <div class="hero-media" aria-hidden="true">
+        <video
+          id="heroVideo"
+          class="video-background"
+          src="assets/video.mp4"
+          muted
+          playsinline
+          webkit-playsinline
+          preload="auto"
+          poster="assets/hero.png"
+          aria-hidden="true"
+        ></video>
+      </div>
       <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-content">
         <div class="hero-copy" data-aos="fade-up">
