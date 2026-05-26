@@ -157,6 +157,7 @@ function setupVideoSync(videoEl, config) {
       scrub: config.scrub || 0.8,
       pin: config.pin || false,
       pinSpacing: config.pinSpacing,
+      pinReparent: config.pinReparent || false,
       anticipatePin: config.anticipatePin || 0,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
@@ -206,7 +207,8 @@ setupVideoSync(secondaryVideo, {
   end: () => `+=${Math.round(window.innerHeight * 3.5)}`,
   scrub: 0.8,
   pin: true,
-  pinSpacing: true
+  pinSpacing: true,
+  pinReparent: true
 });
 
 if (hasGsap && !prefersReducedMotion) {
