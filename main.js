@@ -1,5 +1,7 @@
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const hasGsap = Boolean(window.gsap && window.ScrollTrigger && window.ScrollToPlugin);
+const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
 if (window.AOS) {
   window.AOS.init({
@@ -121,7 +123,12 @@ function primeVideo(videoEl) {
   videoEl.setAttribute("webkit-playsinline", "");
 
   document.documentElement.addEventListener("touchstart", () => {
-    videoEl.play().then(() => videoEl.pause()).catch(() => {});
+    videoEl.play().then(() => {
+      videoEl.pause();
+      if (videoEl.currentTime < 0.01) {
+        videoEl.currentTime = 0.01;
+      }
+    }).catch(() => {});
   }, { once: true });
 }
 
@@ -133,10 +140,14 @@ function setupVideoSync(videoEl, config) {
     return;
   }
 
+  let initialized = false;
+
   const initSync = () => {
-    if (!Number.isFinite(videoEl.duration) || videoEl.duration <= 0) {
+    if (initialized || !Number.isFinite(videoEl.duration) || videoEl.duration <= 0 || videoEl.readyState < 2) {
       return;
     }
+
+    initialized = true;
 
     ScrollTrigger.create({
       trigger: config.trigger,
@@ -149,19 +160,35 @@ function setupVideoSync(videoEl, config) {
       anticipatePin: config.anticipatePin || 0,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
-        videoEl.currentTime = videoEl.duration * self.progress;
+        const duration = Math.max(videoEl.duration - 0.1, 0.01);
+        const nextTime = Math.min(duration, Math.max(0, duration * self.progress));
+        if (Math.abs(videoEl.currentTime - nextTime) > 0.02) {
+          videoEl.currentTime = nextTime;
+        }
       }
     });
+
+    ScrollTrigger.refresh();
   };
 
-  if (videoEl.readyState >= 1 && videoEl.duration) {
+  if (videoEl.readyState >= 2 && videoEl.duration) {
     initSync();
   } else {
-    videoEl.addEventListener("loadedmetadata", initSync, { once: true });
+    videoEl.addEventListener("loadeddata", initSync, { once: true });
+    videoEl.addEventListener("canplay", initSync, { once: true });
   }
 }
 
-setupVideoSync(heroVideo, {
+const useMobileHeroScroll = isiOS && window.matchMedia("(max-width: 860px)").matches;
+
+setupVideoSync(heroVideo, useMobileHeroScroll ? {
+  trigger: "#home",
+  endTrigger: "#home",
+  end: "bottom top",
+  scrub: 0.65,
+  pin: false,
+  pinSpacing: false
+} : {
   trigger: "#home",
   end: () => {
     const durationMultiplier = heroVideo && heroVideo.duration
